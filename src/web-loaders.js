@@ -1,3 +1,5 @@
+'use strict';
+
 var Loader = require('./loader');
 
 var WebLoader = Loader.extend({
@@ -14,7 +16,7 @@ var WebLoader = Loader.extend({
     getSource: function(name) {
         if(this.precompiled[name]) {
             return {
-                src: { type: "code",
+                src: { type: 'code',
                        obj: this.precompiled[name] },
                 path: name
             };
@@ -31,7 +33,7 @@ var WebLoader = Loader.extend({
         }
     },
 
-    fetch: function(url, callback) {
+    fetch: function(url) {
         // Only in the browser please
         var ajax;
         var loading = true;
@@ -41,7 +43,8 @@ var WebLoader = Loader.extend({
             ajax = new XMLHttpRequest();
         }
         else if(window.ActiveXObject) { // IE 8 and older
-            ajax = new ActiveXObject("Microsoft.XMLHTTP");
+            /* global ActiveXObject */
+            ajax = new ActiveXObject('Microsoft.XMLHTTP');
         }
 
         ajax.onreadystatechange = function() {

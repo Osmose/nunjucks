@@ -1,3 +1,5 @@
+'use strict';
+
 var lib = require('./lib');
 var r = require('./runtime');
 
@@ -7,10 +9,11 @@ var filters = {
     },
 
     batch: function(arr, linecount, fill_with) {
+        var i;
         var res = [];
         var tmp = [];
 
-        for(var i=0; i<arr.length; i++) {
+        for(i = 0; i < arr.length; i++) {
             if(i % linecount === 0 && tmp.length) {
                 res.push(tmp);
                 tmp = [];
@@ -21,7 +24,7 @@ var filters = {
 
         if(tmp.length) {
             if(fill_with) {
-                for(var i=tmp.length; i<linecount; i++) {
+                for(i = tmp.length; i < linecount; i++) {
                     tmp.push(fill_with);
                 }
             }
@@ -45,8 +48,8 @@ var filters = {
         }
 
         var spaces = width - str.length;
-        var pre = lib.repeat(" ", spaces/2 - spaces % 2);
-        var post = lib.repeat(" ", spaces/2);
+        var pre = lib.repeat(' ', spaces/2 - spaces % 2);
+        var post = lib.repeat(' ', spaces/2);
         return r.copySafeness(str, pre + str + post);
     },
 
@@ -56,7 +59,7 @@ var filters = {
 
     dictsort: function(val, case_sensitive, by) {
         if (!lib.isObject(val)) {
-            throw new lib.TemplateError("dictsort filter: val must be an object");
+            throw new lib.TemplateError('dictsort filter: val must be an object');
         }
 
         var array = [];
@@ -66,13 +69,13 @@ var filters = {
         }
 
         var si;
-        if (by === undefined || by === "key") {
+        if (by === undefined || by === 'key') {
             si = 0;
-        } else if (by === "value") {
+        } else if (by === 'value') {
             si = 1;
         } else {
             throw new lib.TemplateError(
-                "dictsort filter: You can only sort by either key or value");
+                'dictsort filter: You can only sort by either key or value');
         }
 
         array.sort(function(t1, t2) {
@@ -88,14 +91,14 @@ var filters = {
                 }
             }
 
-            return a > b ? 1 : (a == b ? 0 : -1);
+            return a > b ? 1 : (a === b ? 0 : -1);
         });
 
         return array;
     },
 
     escape: function(str) {
-        if(typeof str == 'string' ||
+        if(typeof str === 'string' ||
            str instanceof r.SafeString) {
             return lib.escape(str);
         }
@@ -120,8 +123,8 @@ var filters = {
         var lines = str.split('\n');
         var sp = lib.repeat(' ', width);
 
-        for(var i=0; i<lines.length; i++) {
-            if(i == 0 && !indentfirst) {
+        for(var i = 0; i < lines.length; i++) {
+            if(i === 0 && !indentfirst) {
                 res += lines[i] + '\n';
             }
             else {
@@ -177,7 +180,7 @@ var filters = {
           return val;
         }
         else {
-            throw new lib.TemplateError("list filter: type not iterable");
+            throw new lib.TemplateError('list filter: type not iterable');
         }
     },
 
@@ -211,7 +214,7 @@ var filters = {
         var count = 1;
         res = res.replace(old, new_);
 
-        while(last != res) {
+        while(last !== res) {
             if(count >= maxCount) {
                 break;
             }
@@ -247,10 +250,10 @@ var filters = {
         var factor = Math.pow(10, precision);
         var rounder;
 
-        if(method == 'ceil') {
+        if(method === 'ceil') {
             rounder = Math.ceil;
         }
-        else if(method == 'floor') {
+        else if(method === 'floor') {
             rounder = Math.floor;
         }
         else {
@@ -369,7 +372,7 @@ var filters = {
             if (lib.isArray(obj)) {
                 parts = obj.map(function(item) {
                     return enc(item[0]) + '=' + enc(item[1]);
-                })
+                });
             } else {
                 parts = [];
                 for (var k in obj) {

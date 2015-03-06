@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 var lib = require('./lib');
@@ -30,8 +32,6 @@ function precompile(input, opts) {
 
     opts = opts || {};
     var env = opts.env || new Environment([]);
-    var asyncFilters = env.asyncFilters;
-    var extensions = env.extensionsList;
 
     var pathStats = fs.existsSync(input) && fs.statSync(input);
     var output = '';
@@ -56,25 +56,7 @@ function precompile(input, opts) {
     else if(pathStats.isDirectory()) {
         var templates = [];
 
-        function addTemplates(dir) {
-            var files = fs.readdirSync(dir);
 
-            for(var i=0; i<files.length; i++) {
-                var filepath = path.join(dir, files[i]);
-                var subpath = filepath.substr(path.join(input, '/').length);
-                var stat = fs.statSync(filepath);
-
-                if(stat && stat.isDirectory()) {
-                    subpath += '/';
-                    if (!match(subpath, opts.exclude)) {
-                        addTemplates(filepath);
-                    }
-                }
-                else if(match(subpath, opts.include)) {
-                    templates.push(filepath);
-                }
-            }
-        }
 
         addTemplates(input);
 
@@ -99,6 +81,26 @@ function precompile(input, opts) {
         }
 
         return output;
+    }
+
+    function addTemplates(dir) {
+        var files = fs.readdirSync(dir);
+
+        for(var i=0; i<files.length; i++) {
+            var filepath = path.join(dir, files[i]);
+            var subpath = filepath.substr(path.join(input, '/').length);
+            var stat = fs.statSync(filepath);
+
+            if(stat && stat.isDirectory()) {
+                subpath += '/';
+                if (!match(subpath, opts.exclude)) {
+                    addTemplates(filepath);
+                }
+            }
+            else if(match(subpath, opts.include)) {
+                templates.push(filepath);
+            }
+        }
     }
 }
 
@@ -135,4 +137,4 @@ function _precompile(str, name, env, asFunction) {
 module.exports = {
     precompile: precompile,
     precompileString: precompileString
-}
+};

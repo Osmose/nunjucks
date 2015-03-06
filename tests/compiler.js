@@ -1,7 +1,9 @@
 (function() {
+    'use strict';
+
     var expect, util, Environment, Template, fs;
 
-    if(typeof require != 'undefined') {
+    if(typeof require !== 'undefined') {
         expect = require('expect.js');
         util = require('./util');
         Environment = require('../src/environment').Environment;
@@ -490,11 +492,11 @@
         it('should import templates', function(done) {
             equal('{% import "import.html" as imp %}' +
                   '{{ imp.foo() }} {{ imp.bar }}',
-                  "Here's a macro baz");
+                  'Here\'s a macro baz');
 
             equal('{% from "import.html" import foo as baz, bar %}' +
                   '{{ bar }} {{ baz() }}',
-                  "baz Here's a macro");
+                  'baz Here\'s a macro');
 
             // TODO: Should the for loop create a new frame for each
             // iteration? As it is, `num` is set on all iterations after
@@ -514,12 +516,12 @@
             equal('{% set bar = "BAR" %}' +
                   '{% import "import-context.html" as imp with context %}' +
                   '{{ imp.foo() }}',
-                  "Here's BAR");
+                  'Here\'s BAR');
 
             equal('{% set bar = "BAR" %}' +
                   '{% from "import-context.html" import foo with context %}' +
                   '{{ foo() }}',
-                  "Here's BAR");
+                  'Here\'s BAR');
 
             finish(done);
         });
@@ -528,12 +530,12 @@
             equal('{% set bar = "BAR" %}' +
                   '{% import "import-context.html" as imp without context %}' +
                   '{{ imp.foo() }}',
-                  "Here's ");
+                  'Here\'s ');
 
             equal('{% set bar = "BAR" %}' +
                   '{% from "import-context.html" import foo without context %}' +
                   '{{ foo() }}',
-                  "Here's ");
+                  'Here\'s ');
 
             finish(done);
         });
@@ -542,12 +544,12 @@
             equal('{% set bar = "BAR" %}' +
                   '{% import "import-context.html" as imp %}' +
                   '{{ imp.foo() }}',
-                  "Here's ");
+                  'Here\'s ');
 
             equal('{% set bar = "BAR" %}' +
                   '{% from "import-context.html" import foo %}' +
                   '{{ foo() }}',
-                  "Here's ");
+                  'Here\'s ');
 
             finish(done);
         });
@@ -572,7 +574,7 @@
             render('{% extends "base.html" %}' +
                    '{% block notReal %}{{ foo() }}{% endblock %}',
                    { foo: function() { count++; }},
-                   function(err, res) {
+                   function() {
                        expect(count).to.be(0);
                    });
 
@@ -609,11 +611,11 @@
                   'hello world FooInclude james');
 
             equal('hello world {% include tmpl %}',
-                  { name: 'thedude', tmpl: "include.html" },
+                  { name: 'thedude', tmpl: 'include.html' },
                   'hello world FooInclude thedude');
 
             equal('hello world {% include data.tmpl %}',
-                  { name: 'thedude', data: {tmpl: "include.html"} },
+                  { name: 'thedude', data: {tmpl: 'include.html'} },
                   'hello world FooInclude thedude');
 
             finish(done);
@@ -747,12 +749,13 @@
 
         it('should allow custom tag compilation', function(done) {
             function testExtension() {
+                // jshint validthis: true
                 this.tags = ['test'];
 
                 this.parse = function(parser, nodes) {
                     parser.advanceAfterBlockEnd();
 
-                    var content = parser.parseUntilBlocks("endtest");
+                    var content = parser.parseUntilBlocks('endtest');
                     var tag = new nodes.CallExtension(this, 'run', null, [content]);
                     parser.advanceAfterBlockEnd();
 
@@ -761,7 +764,7 @@
 
                 this.run = function(context, content) {
                     // Reverse the string
-                    return content().split("").reverse().join("");
+                    return content().split('').reverse().join('');
                 };
             }
 
@@ -775,6 +778,7 @@
 
         it('should allow custom tag compilation without content', function(done) {
             function testExtension() {
+                // jshint validthis: true
                 this.tags = ['test'];
 
                 this.parse = function(parser, nodes) {
@@ -787,7 +791,7 @@
 
                 this.run = function(context, arg1) {
                     // Reverse the string
-                    return arg1.split("").reverse().join("");
+                    return arg1.split('').reverse().join('');
                 };
             }
 
@@ -801,6 +805,7 @@
 
         it('should allow complicated custom tag compilation', function(done) {
             function testExtension() {
+                // jshint validthis: true
                 this.tags = ['test'];
 
                 /* normally this is automatically done by Environment */
@@ -823,10 +828,10 @@
                 };
 
                 this.run = function(context, body, intermediate) {
-                    var output = body().split("").join(",");
+                    var output = body().split('').join(',');
                     if(intermediate) {
                         // Reverse the string.
-                        output += intermediate().split("").reverse().join("");
+                        output += intermediate().split('').reverse().join('');
                     }
                     return output;
                 };
@@ -850,12 +855,13 @@
 
         it('should allow custom tag with args compilation', function(done) {
             function testExtension() {
+                // jshint validthis: true
                 this.tags = ['test'];
 
                 /* normally this is automatically done by Environment */
                 this._name = 'testExtension';
 
-                this.parse = function(parser, nodes, lexer) {
+                this.parse = function(parser, nodes) {
                     var body, args = null;
                     var tok = parser.nextToken();
 
@@ -870,12 +876,12 @@
                 };
 
                 this.run = function(context, prefix, kwargs, body) {
-                    if(typeof prefix == 'function') {
+                    if(typeof prefix === 'function') {
                         body = prefix;
                         prefix = '';
                         kwargs = {};
                     }
-                    else if(typeof kwargs == 'function') {
+                    else if(typeof kwargs === 'function') {
                         body = kwargs;
                         kwargs = {};
                     }
@@ -975,6 +981,7 @@
 
         it('should not autoescape when extension set false', function(done) {
             function testExtension() {
+                // jshint validthis: true
                 this.tags = ['test'];
 
                 this.autoescape = false;
@@ -986,7 +993,7 @@
                     return new nodes.CallExtension(this, 'run', args, null);
                 };
 
-                this.run = function(context) {
+                this.run = function() {
                     // Reverse the string
                     return '<b>Foo</b>';
                 };

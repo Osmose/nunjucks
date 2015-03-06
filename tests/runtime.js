@@ -1,7 +1,9 @@
 (function() {
+    'use strict';
+
     var expect, util;
 
-    if(typeof require != 'undefined') {
+    if(typeof require !== 'undefined') {
         expect = require('expect.js');
         util = require('./util');
     }
@@ -10,7 +12,6 @@
         util = window.util;
     }
 
-    var equal = util.equal;
     var finish = util.finish;
     var render = util.render;
 

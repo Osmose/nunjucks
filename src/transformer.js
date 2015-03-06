@@ -1,3 +1,5 @@
+'use strict';
+
 var nodes = require('./nodes');
 var lib = require('./lib');
 
@@ -158,7 +160,7 @@ function liftSuper(ast) {
 
         blockNode.body = walk(blockNode.body, function(node) {
             if(node instanceof nodes.FunCall &&
-               node.name.value == 'super') {
+               node.name.value === 'super') {
                 hasSuper = true;
                 return new nodes.Symbol(node.lineno, node.colno, symbol);
             }
@@ -220,7 +222,7 @@ function cps(ast, asyncFilters) {
     return convertStatements(liftSuper(liftFilters(ast, asyncFilters)));
 }
 
-function transform(ast, asyncFilters, name) {
+function transform(ast, asyncFilters) {
     return cps(ast, asyncFilters || []);
 }
 

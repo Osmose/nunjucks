@@ -1,7 +1,9 @@
 (function() {
-    var expect, util, lib;
+    'use strict';
 
-    if(typeof require != 'undefined') {
+    var expect, util, lib, Environment, Loader, templatesPath;
+
+    if(typeof require !== 'undefined') {
         expect = require('expect.js');
         util = require('./util');
         lib = require('../src/lib');

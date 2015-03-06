@@ -1,15 +1,17 @@
+'use strict';
+
 var path = require('path');
 var lib = require('./lib');
 var Obj = require('./object');
-var lexer = require('./lexer');
 var compiler = require('./compiler');
 var builtin_filters = require('./filters');
 var builtin_loaders = require('./loaders');
 var runtime = require('./runtime');
 var globals = require('./globals');
 var Frame = runtime.Frame;
+var Template, Environment;
 
-var Environment = Obj.extend({
+Environment = Obj.extend({
     init: function(loaders, opts) {
         // The dev flag determines the trace that'll be shown on errors.
         // If set to true, returns the full trace from the error point,
@@ -17,7 +19,7 @@ var Environment = Obj.extend({
         // (the full trace from within nunjucks may confuse developers using
         //  the library)
         // defaults to false
-        var opts = this.opts = opts || {};
+        opts = this.opts = opts || {};
         this.opts.dev = !!opts.dev;
 
         // The autoescape flag sets global autoescaping. If true,
@@ -147,8 +149,8 @@ var Environment = Obj.extend({
                 }
 
                 // Resolve name relative to parentName
-                if (parentName && (name.indexOf("./") == 0 ||
-                                   name.indexOf("../") == 0)) {
+                if (parentName && (name.indexOf('./') === 0 ||
+                                   name.indexOf('../') === 0)) {
                     name = loader.resolve(parentName, name);
                 }
 
@@ -301,7 +303,7 @@ var Context = Obj.extend({
         var blk = this.blocks[name][idx + 1];
         var context = this;
 
-        if(idx == -1 || !blk) {
+        if(idx === -1 || !blk) {
             throw new Error('no super block available for "' + name + '"');
         }
 
@@ -322,7 +324,7 @@ var Context = Obj.extend({
     }
 });
 
-var Template = Obj.extend({
+Template = Obj.extend({
     init: function (src, env, path, eagerCompile) {
         this.env = env || new Environment();
 
@@ -336,8 +338,8 @@ var Template = Obj.extend({
             this.tmplStr = src;
         }
         else {
-            throw new Error("src must be a string or an object describing " +
-                            "the source");
+            throw new Error('src must be a string or an object describing ' +
+                            'the source');
         }
 
         this.path = path;
@@ -438,6 +440,7 @@ var Template = Obj.extend({
                                           this.path,
                                           this.env.opts);
 
+            /* jslint evil: true */
             var func = new Function(source);
             props = func();
         }
@@ -451,7 +454,7 @@ var Template = Obj.extend({
         var blocks = {};
 
         for(var k in props) {
-            if(k.slice(0, 2) == 'b_') {
+            if(k.slice(0, 2) === 'b_') {
                 blocks[k.slice(2)] = props[k];
             }
         }

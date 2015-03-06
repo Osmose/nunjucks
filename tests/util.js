@@ -1,17 +1,19 @@
-(function() {
-    var Environment, Template, loader, templatesPath, expect;
+'use strict';
 
-    if(typeof require != 'undefined') {
+(function() {
+    var Environment, Template, Loader, templatesPath, expect;
+
+    if(typeof require !== 'undefined') {
         Environment = require('../src/environment').Environment;
         Template = require('../src/environment').Template;
-        loader = require('../src/node-loaders').FileSystemLoader;
+        Loader = require('../src/node-loaders').FileSystemLoader;
         templatesPath = 'tests/templates';
         expect = require('expect.js');
     }
     else {
         Environment = nunjucks.Environment;
         Template = nunjucks.Template;
-        loader = nunjucks.WebLoader;
+        Loader = nunjucks.WebLoader;
         templatesPath = '../templates';
         expect = window.expect;
     }
@@ -63,22 +65,23 @@
 
         opts = opts || {};
         opts.dev = true;
-        var e = new Environment(new loader(templatesPath, true), opts);
+        var e = new Environment(new Loader(templatesPath, true), opts);
 
+        var name;
         if(opts.filters) {
-            for(var name in opts.filters) {
+            for(name in opts.filters) {
                 e.addFilter(name, opts.filters[name]);
-            }        
+            }
         }
 
         if(opts.asyncFilters) {
-            for(var name in opts.asyncFilters) {
+            for(name in opts.asyncFilters) {
                 e.addFilter(name, opts.asyncFilters[name], true);
-            }        
+            }
         }
 
         if(opts.extensions) {
-            for(var name in opts.extensions) {
+            for(name in opts.extensions) {
                 e.addExtension(name, opts.extensions[name]);
             }
         }
@@ -97,14 +100,14 @@
 
                 doneAsyncs++;
 
-                if(numAsyncs == doneAsyncs && doneHandler) {
+                if(numAsyncs === doneAsyncs && doneHandler) {
                     doneHandler();
                 }
             }, 0);
         });
     }
 
-    if(typeof module != 'undefined') {
+    if(typeof module !== 'undefined') {
         module.exports.render = render;
         module.exports.equal = equal;
         module.exports.finish = finish;

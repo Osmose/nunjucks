@@ -1,8 +1,10 @@
 (function() {
+    'use strict';
+
     var expect, Environment, Loader, templatesPath;
     var path = require('path');
 
-    if(typeof require != 'undefined') {
+    if(typeof require !== 'undefined') {
         expect = require('expect.js');
         Environment = require('../src/environment').Environment;
         Loader = require('../src/node-loaders').FileSystemLoader;
@@ -19,7 +21,6 @@
         it('should always force compilation of parent template', function() {
             var env = new Environment(new Loader(templatesPath));
 
-            var parent = env.getTemplate('base.html');
             var child = env.getTemplate('base-inherit.html');
             expect(child.render()).to.be('Foo*Bar*BazFizzle');
         });
@@ -37,7 +38,7 @@
         it('should handle correctly relative paths in renderString', function() {
             var env = new Environment(new Loader(templatesPath));
             expect(env.renderString('{% extends "./relative/test1.html" %}{% block block1 %}Test3{% endblock %}', {}, {
-                path: path.resolve(templatesPath, "string.html")
+                path: path.resolve(templatesPath, 'string.html')
             })).to.be('FooTest3BazFizzle');
         });
     });

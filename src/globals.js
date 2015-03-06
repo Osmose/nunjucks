@@ -1,3 +1,4 @@
+'use strict';
 
 function cycler(items) {
     var index = -1;
@@ -61,6 +62,6 @@ var globals = {
     joiner: function(sep) {
         return joiner(sep);
     }
-}
+};
 
 module.exports = globals;

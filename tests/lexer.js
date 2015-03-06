@@ -1,7 +1,9 @@
 (function() {
+   'use strict';
+
     var expect, lib, lexer;
 
-    if(typeof require != 'undefined') {
+    if(typeof require !== 'undefined') {
         expect = require('expect.js');
         lib = require('../src/lib');
         lexer = require('../src/lexer');
@@ -18,7 +20,7 @@
             var tok = tokens.nextToken();
 
             if(!ws) {
-                while(tok && tok.type == lexer.TOKEN_WHITESPACE) {
+                while(tok && tok.type === lexer.TOKEN_WHITESPACE) {
                     tok = tokens.nextToken();
                 }
             }
@@ -132,7 +134,7 @@
             tok = tokens.nextToken();
             tok = tokens.nextToken();
             expect(tok.type).to.be(lexer.TOKEN_SYMBOL);
-            expect(tok.value).to.be("foo");
+            expect(tok.value).to.be('foo');
         });
 
         it('should parse block start and end', function() {

@@ -14,13 +14,14 @@
         "uglify-js": "*",
         "express": "4.x",
         "supertest": "*",
-        "istanbul": "0.3.x"
+        "istanbul": "0.3.x",
+        "jshint": "*"
     },
     "engines": {
         "node": "*"
     },
     "scripts": {
-        "test": "make test"
+        "test": "make lint && make test"
     },
     "bin": {
         "nunjucks-precompile": "./bin/precompile"
